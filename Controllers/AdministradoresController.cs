@@ -101,13 +101,31 @@ namespace RyujinBites.Controllers
 
                 if (result.Succeeded)
                 {
-                    // Se a criação do usuário for bem-sucedida, atribui o papel selecionado.
+                    // ... atribui o papel selecionado ...
                     if (!string.IsNullOrEmpty(model.SelectedRole))
                     {
                         await _userManager.AddToRoleAsync(user, model.SelectedRole);
                     }
+
+                    // *** ADICIONE AQUI A CRIAÇÃO DO REGISTRO NA TABELA CLIENTES ***
+                    // Se o papel selecionado for 'Cliente', ou se ele for um usuário que fará pedidos/avaliações
+                    if (model.SelectedRole == "Cliente") // Ou outro critério
+                    {
+                        var cliente = new RyujinBites.Models.Lanchonete.Cliente
+                        {
+                            ClienteId = user.Id,
+                            Endereco = null, // Preencha se aplicável
+                            Complemento = null,
+                            Cidade = null,
+                            Estado = null,
+                            CEP = null
+                        };
+                        _context.Clientes.Add(cliente);
+                        await _context.SaveChangesAsync();
+                    }
+                    
                     _logger.LogInformation("Novo usuário criado por administrador.");
-                    return RedirectToAction(nameof(Index)); // Redireciona para a lista de usuários.
+                    return RedirectToAction(nameof(Index));
                 }
 
                 // Se a criação do usuário falhar, adiciona os erros ao ModelState.

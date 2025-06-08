@@ -1,8 +1,70 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Bem-vindo ao RyujinBites!"; // Título da página
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-  <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">Lorem (PK, string/GUID) (PK, string/GUID)</a>.</p>
+<div class="text-center mb-5">
+    <h1 class="display-4">Nosso Cardápio</h1>
+    <p class="lead">Delícias Lendárias para o seu Paladar!</p>
 </div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <img src="https://via.placeholder.com/300x200?text=X-Dragao+Supremo" class="card-img-top" alt="X-Dragão Supremo">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">X-Dragão Supremo</h5>
+                <p class="card-text">O maior lanche, com carne de Wagyu e molho secreto Ryujin.</p>
+                <div class="mt-auto d-flex justify-content-between align-items-center">
+                    <span class="fs-4 fw-bold text-success">R$ 45,90</span>
+                    <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-primary btn-sm">Login para Pedir</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <img src="https://via.placeholder.com/300x200?text=Batata+da+Furia" class="card-img-top" alt="Batata Frita da Fúria">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">Batata Frita da Fúria</h5>
+                <p class="card-text">Batatas crocantes com tempero picante de dragão.</p>
+                <div class="mt-auto d-flex justify-content-between align-items-center">
+                    <span class="fs-4 fw-bold text-success">R$ 18,50</span>
+                    <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-primary btn-sm">Login para Pedir</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <img src="https://via.placeholder.com/300x200?text=Pocao+Gelo+Azul" class="card-img-top" alt="Poção do Gelo Azul">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">Poção do Gelo Azul</h5>
+                <p class="card-text">Bebida refrescante com sabor de mirtilo e toque de menta.</p>
+                <div class="mt-auto d-flex justify-content-between align-items-center">
+                    <span class="fs-4 fw-bold text-success">R$ 12,00</span>
+                    <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-primary btn-sm">Login para Pedir</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <img src="https://via.placeholder.com/300x200?text=Asas+Wyvern" class="card-img-top" alt="Asas de Wyvern Crocantes">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">Asas de Wyvern Crocantes</h5>
+                <p class="card-text">Porção de frango crocante com molho agridoce de frutas exóticas.</p>
+                <div class="mt-auto d-flex justify-content-between align-items-center">
+                    <span class="fs-4 fw-bold text-success">R$ 35,00</span>
+                    <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-primary btn-sm">Login para Pedir</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+}
