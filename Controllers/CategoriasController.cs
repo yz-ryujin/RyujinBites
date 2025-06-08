@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using RyujinBites.Data;
 using RyujinBites.Models.Lanchonete;
 
 namespace RyujinBites.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     public class CategoriasController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -44,6 +46,7 @@ namespace RyujinBites.Controllers
         }
 
         // GET: Categorias/Create
+
         public IActionResult Create()
         {
             return View();

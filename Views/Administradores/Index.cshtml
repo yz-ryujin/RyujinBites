@@ -1,0 +1,110 @@
+﻿@model IEnumerable<RyujinBites.Models.ViewModels.UserViewModel>
+
+@{
+    ViewData["Title"] = "Gerenciar Usuários";
+}
+
+<h1>Gerenciar Usuários</h1>
+
+<p>
+    <a asp-action="CreateUser">Criar Novo Usuário</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telefone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Roles)
+            </th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Telefone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Roles)
+                </td>
+                <td>
+                    <a asp-action="EditUser" asp-route-id="@item.Id">Editar Dados</a> |
+                    <a href="#" class="text-danger deleteUserBtn" data-id="@item.Id" data-name="@item.Nome">Deletar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteUserModalLabel">Confirmar Deleção</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Tem certeza de que deseja deletar o usuário <strong id="userNameToDelete"></strong>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Deletar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            // Script para o Modal de DELEÇÃO
+            $('.deleteUserBtn').on('click', function () {
+                var userId = $(this).data('id');
+                var userName = $(this).data('name');
+
+                $('#userNameToDelete').text(userName);
+
+                $('#confirmDeleteBtn').off('click').on('click', function () {
+                    $.ajax({
+                        url: '@Url.Action("Delete", "Administradores")',
+                        type: 'POST',
+                        data: { id: userId, __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() },
+                        success: function (result) {
+                            if (result.success) {
+                                location.reload();
+                            } else {
+                                alert('Erro ao deletar: ' + result.message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            alert('Ocorreu um erro: ' + error);
+                        }
+                    });
+                });
+
+                $('#deleteUserModal').modal('show');
+            });
+
+        });
+    </script>
+}
