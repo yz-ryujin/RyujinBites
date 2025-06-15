@@ -16,48 +16,61 @@
                 RyujinBites
             </div>
             <div class="list-group list-group-flush my-3">
-                <a href="/" class="list-group-item list-group-item-action bg-transparent second-text active">
+                <a href="/" class="list-group-item list-group-item-action bg-transparent second-text @(ViewData["ActivePage"]?.ToString() == "Home" ? "active" : "")">
                     <i class="fas fa-home me-2"></i>Home
                 </a>
-                <a href="/Categorias" class="list-group-item list-group-item-action bg-transparent second-text">
-                    <i class="fas fa-list me-2"></i>Categorias
-                </a>
-                <a href="/Produtos" class="list-group-item list-group-item-action bg-transparent second-text">
-                    <i class="fas fa-burger me-2"></i>Produtos
-                </a>
-                <a href="/Clientes" class="list-group-item list-group-item-action bg-transparent second-text">
-                    <i class="fas fa-users me-2"></i>Clientes
-                </a>
-                <a href="/Administradores" class="list-group-item list-group-item-action bg-transparent second-text">
-                    <i class="fas fa-user-shield me-2"></i>Administradores
-                </a>
-                <a href="/Cupons" class="list-group-item list-group-item-action bg-transparent second-text">
-                    <i class="fas fa-tags me-2"></i>Cupons
-                </a>
-                <a href="/Pedidos/MeusPedidos" class="list-group-item list-group-item-action bg-transparent second-text">
-                    <i class="fas fa-receipt me-2"></i>Meus Pedidos
-                </a>
-                <a href="/Pedidos/GerenciarPedidos" class="list-group-item list-group-item-action bg-transparent second-text">
-                    <i class="fas fa-tasks me-2"></i>Gerenciar Pedidos
-                </a>
-                <a href="/Avaliacoes" class="list-group-item list-group-item-action bg-transparent second-text">
+                <a href="/Avaliacoes" class="list-group-item list-group-item-action bg-transparent second-text @(ViewData["ActivePage"]?.ToString() == "Avaliacoes" ? "active" : "")">
                     <i class="fas fa-star me-2"></i>Avaliações
-                </a>
-                <a href="/Pagamentos" class="list-group-item list-group-item-action bg-transparent second-text">
-                    <i class="fas fa-money-check-alt me-2"></i>Pagamentos
-                </a>
-                @if (User.IsInRole("Administrador"))
-                {
-                    <a href="/Avaliacoes/Denuncias" class="list-group-item list-group-item-action bg-transparent second-text">
-                        <i class="fas fa-flag me-2"></i>Avaliações Denunciadas
-                    </a>
-                }
-                <a href="/Identity/Account/Logout" class="list-group-item list-group-item-action bg-transparent text-danger fw-bold">
-                    <i class="fas fa-power-off me-2"></i>Logout
                 </a>
                 <a href="/Home/Privacy" class="list-group-item list-group-item-action bg-transparent second-text">
                     <i class="fas fa-info-circle me-2"></i>Privacidade
                 </a>
+                <hr class="sidebar-divider my-2"> @if (User.Identity.IsAuthenticated) // Apenas se o usuário estiver logado
+                {
+                    <a href="/Pedidos/MeusPedidos" class="list-group-item list-group-item-action bg-transparent second-text @(ViewData["ActivePage"]?.ToString() == "MeusPedidos" ? "active" : "")">
+                        <i class="fas fa-receipt me-2"></i>Meus Pedidos
+                    </a>
+                    <a href="/Pagamentos/MeusPagamentos" class="list-group-item list-group-item-action bg-transparent second-text @(ViewData["ActivePage"]?.ToString() == "MeusPagamentos" ? "active" : "")">
+                        <i class="fas fa-money-check-alt me-2"></i>Meus Pagamentos
+                    </a>
+                    <hr class="sidebar-divider my-2"> @if (User.IsInRole("Administrador")) // Apenas para Administradores
+                    {
+                        <h6 class="sidebar-heading px-3 mt-4 mb-1 text-muted text-uppercase">Gerenciamento</h6>
+                        <a href="/Categorias" class="list-group-item list-group-item-action bg-transparent second-text @(ViewData["ActivePage"]?.ToString() == "Categorias" ? "active" : "")">
+                            <i class="fas fa-list me-2"></i>Categorias
+                        </a>
+                        <a href="/Produtos" class="list-group-item list-group-item-action bg-transparent second-text @(ViewData["ActivePage"]?.ToString() == "Produtos" ? "active" : "")">
+                            <i class="fas fa-burger me-2"></i>Produtos
+                        </a>
+                        <a href="/Cupons" class="list-group-item list-group-item-action bg-transparent second-text @(ViewData["ActivePage"]?.ToString() == "Cupons" ? "active" : "")">
+                            <i class="fas fa-tags me-2"></i>Cupons
+                        </a>
+                        <a href="/Pedidos/GerenciarPedidos" class="list-group-item list-group-item-action bg-transparent second-text @(ViewData["ActivePage"]?.ToString() == "GerenciarPedidos" ? "active" : "")">
+                            <i class="fas fa-tasks me-2"></i>Gerenciar Pedidos
+                        </a>
+                        <a href="/Pagamentos/GerenciarPagamentos" class="list-group-item list-group-item-action bg-transparent second-text @(ViewData["ActivePage"]?.ToString() == "GerenciarPagamentos" ? "active" : "")">
+                            <i class="fas fa-money-check-alt me-2"></i>Gerenciar Pagamentos
+                        </a>
+                        <a href="/Avaliacoes/Denuncias" class="list-group-item list-group-item-action bg-transparent second-text @(ViewData["ActivePage"]?.ToString() == "AvaliacoesDenunciadas" ? "active" : "")">
+                            <i class="fas fa-flag me-2"></i>Avaliações Denunciadas
+                        </a>
+                        <a href="/Administradores" class="list-group-item list-group-item-action bg-transparent second-text @(ViewData["ActivePage"]?.ToString() == "Administradores" ? "active" : "")">
+                            <i class="fas fa-user-shield me-2"></i>Gerenciar Usuários
+                        </a>
+                    }
+                    <hr class="sidebar-divider my-2"> <a href="/Identity/Account/Logout" class="list-group-item list-group-item-action bg-transparent text-danger fw-bold">
+                        <i class="fas fa-power-off me-2"></i>Logout
+                    </a>
+                }
+                else // Se não estiver logado, oferece login/registro
+                {
+                    <hr class="sidebar-divider my-2"> <a href="/Identity/Account/Login" class="list-group-item list-group-item-action bg-transparent primary-text fw-bold">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                    <a href="/Identity/Account/Register" class="list-group-item list-group-item-action bg-transparent primary-text fw-bold">
+                        <i class="fas fa-user-plus me-2"></i>Registrar
+                    </a>
+                }
             </div>
         </div>
         <div id="page-content-wrapper">
