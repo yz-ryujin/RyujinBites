@@ -3,7 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RyujinBites.Models.Lanchonete
 {
-    public class ItemPedido{
+    public class ItemPedido
+    {
         public int PedidoId { get; set; }
         public int ProdutoId { get; set; }
         [ForeignKey("PedidoId")]

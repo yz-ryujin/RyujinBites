@@ -3,7 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RyujinBites.Models.Lanchonete
 {
-    public class Pagamento{
+    public class Pagamento
+    {
         [Key]
         public int PagamentoId { get; set; }
         public int PedidoId { get; set; } // Referência ao Pedido associado

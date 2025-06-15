@@ -5,18 +5,11 @@ using Microsoft.AspNetCore.Identity.UI.Services; // Para a interface IEmailSende
 using Microsoft.AspNetCore.Mvc; // Para classes como PageModel, IActionResult
 using Microsoft.AspNetCore.Mvc.RazorPages; // Para herdar de PageModel
 using Microsoft.AspNetCore.WebUtilities; // Para WebEncoders
-using Microsoft.Extensions.Logging; // Para ILogger e logging
 using RyujinBites.Data; // Para ApplicationDbContext
 using RyujinBites.Models.Identity; // Importa o namespace onde sua classe ApplicationUser está definida
-using RyujinBites.Models.Lanchonete; // Para a classe Cliente (do seu modelo Lanchonete)
-using System; // Para tipos básicos como DateTime, Exception
-using System.Collections.Generic; // Para usar IList<T>
 using System.ComponentModel.DataAnnotations; // Para atributos como [Required], [Display], [StringLength]
-using System.Linq; // Para extensões LINQ como .ToList()
 using System.Text; // Para Encoding.UTF8
 using System.Text.Encodings.Web; // Para HtmlEncoder.Default
-using System.Threading; // Para CancellationToken
-using System.Threading.Tasks; // Para Task e async/await
 
 namespace RyujinBites.Areas.Identity.Pages.Account
 {

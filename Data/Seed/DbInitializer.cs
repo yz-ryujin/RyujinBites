@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection; // Necessário para GetRequiredService
 // REMOVER: using Microsoft.Extensions.Logging; // Não será mais usado ILogger aqui
 using RyujinBites.Models.Identity; // Necessário para ApplicationUser
-using RyujinBites.Models.Lanchonete; // Necessário para Cliente
-using System;
-using System.Linq; // Necessário para .Select(), .Any()
-using System.Threading.Tasks;
 
 namespace RyujinBites.Data.Seed
 {

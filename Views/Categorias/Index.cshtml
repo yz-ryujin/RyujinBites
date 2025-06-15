@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<RyujinBites.Models.Lanchonete.Categoria>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Categorias";
 }
 
-<h1>Index</h1>
+<h1>Categorias</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a href="#" class="btn btn-success createCategoriaBtn">Criar Nova Categoria</a>
 </p>
 <table class="table">
     <thead>
@@ -18,24 +18,98 @@
             <th>
                 @Html.DisplayNameFor(model => model.Descricao)
             </th>
-            <th></th>
+            <th>Ações</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Descricao)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.CategoriaId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.CategoriaId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.CategoriaId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Descricao)
+                </td>
+                <td>
+                    <a href="#" class="btn btn-sm btn-info detailsCategoriaBtn" data-id="@item.CategoriaId">Detalhes</a> |
+                    <a href="#" class="btn btn-sm btn-warning editCategoriaBtn" data-id="@item.CategoriaId">Editar</a> |
+                    <a href="#" class="btn btn-sm btn-danger deleteCategoriaBtn" data-id="@item.CategoriaId">Deletar</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<div class="modal fade" id="categoriaModal" tabindex="-1" aria-labelledby="categoriaModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="categoriaModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+                                     $(document).ready(function () {
+                                         // Função genérica para carregar e exibir modais
+                                         function loadModal(actionName, id, title, postActionName) {
+                                             var urlForGet = `@Url.Action("__ACTION__", "Categorias", new { id = "__ID__" })`
+                                                 .replace('__ACTION__', actionName)
+                                                 .replace('__ID__', id || '');
+
+                                             $('#categoriaModalLabel').text(title);
+                                             $('#categoriaModal .modal-body').load(urlForGet, function () {
+                                                 $('#categoriaModal').modal('show');
+
+                                                 $('#categoriaModal .modal-body form').on('submit', function (e) {
+                                                     e.preventDefault();
+
+                                                     var form = $(this);
+                                                     var formData = form.serialize();
+                                                     // var antiForgeryToken = $('input[name="__RequestVerificationToken"]').val();
+    
+                                                     var dataWithToken = formData + '&__RequestVerificationToken=';
+
+                                                     var urlForPost = `@Url.Action("__POST_ACTION__", "Categorias", new { id = "__ID__" })`
+                                                         .replace('__POST_ACTION__', postActionName)
+                                                         .replace('__ID__', id || '');
+
+                                                     $.ajax({
+                                                         url: urlForPost,
+                                                         type: 'POST',
+                                                         data: dataWithToken,
+                                                         success: function (result) {
+                                                             if (result.success) {
+                                                                 alert(result.message);
+                                                                 $('#categoriaModal').modal('hide');
+                                                                 location.reload();
+                                                             } else {
+                                                                 alert('Erro: ' + result.message);
+                                                             }
+                                                         },
+                                                         error: function (xhr, error) {
+                                                             alert('Ocorreu um erro: ' + error + '\n' + xhr.responseText);
+                                                         }
+                                                     });
+                                                 });
+                                             });
+                                         }
+
+                                         // Eventos de clique para os botões/links
+                                         $('.createCategoriaBtn').on('click', function (e) { e.preventDefault(); loadModal('Create', null, 'Criar Nova Categoria', 'Create'); });
+                                         $('.detailsCategoriaBtn').on('click', function (e) { e.preventDefault(); var id = $(this).data('id'); loadModal('Details', id, 'Detalhes da Categoria', 'Details'); });
+                                         $('.editCategoriaBtn').on('click', function (e) { e.preventDefault(); var id = $(this).data('id'); loadModal('Edit', id, 'Editar Categoria', 'Edit'); });
+                                         $('.deleteCategoriaBtn').on('click', function (e) { e.preventDefault(); var id = $(this).data('id'); loadModal('Delete', id, 'Deletar Categoria', 'Delete'); });
+                                     });
+    </script>
+}

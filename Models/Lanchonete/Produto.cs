@@ -3,7 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RyujinBites.Models.Lanchonete
 {
-    public class Produto{
+    public class Produto
+    {
         [Key]
         public int ProdutoId { get; set; }
         [Required]

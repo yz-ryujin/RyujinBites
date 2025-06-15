@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using RyujinBites.Data;
 using RyujinBites.Data.Seed; // O namespace da sua nova classe DbInitializer
 using RyujinBites.Models.Identity;
-using Microsoft.Extensions.Logging; // Adicionado para ILogger no bloco do Seeder
 
 var builder = WebApplication.CreateBuilder(args);
 

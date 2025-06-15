@@ -1,0 +1,65 @@
+﻿@model IEnumerable<RyujinBites.Models.Lanchonete.Pagamento>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Pedido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MetodoPagamento)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ValorPago)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataPagamento)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StatusPagamento)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransacaoIdExterno)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Pedido.StatusPedido)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MetodoPagamento)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ValorPago)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataPagamento)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StatusPagamento)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransacaoIdExterno)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.PagamentoId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.PagamentoId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.PagamentoId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

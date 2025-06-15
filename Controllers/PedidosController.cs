@@ -6,9 +6,6 @@ using Microsoft.EntityFrameworkCore; // Para métodos de extensão do EF Core (I
 using RyujinBites.Data; // Seu DbContext
 using RyujinBites.Models.Identity; // Sua classe ApplicationUser
 using RyujinBites.Models.Lanchonete; // Suas classes de modelo (Pedido, Cliente, Cupom)
-using System.Linq; // Para métodos LINQ (Where, Any)
-using System.Security.Claims; // Para GetUserId() - embora _userManager.GetUserId(User) seja mais direto
-using System.Threading.Tasks; // Para Task e async/await
 
 namespace RyujinBites.Controllers
 {

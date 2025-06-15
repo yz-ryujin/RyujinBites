@@ -2,7 +2,8 @@
 
 namespace RyujinBites.Models.Lanchonete
 {
-    public class Categoria{
+    public class Categoria
+    {
         [Key]
         public int CategoriaId { get; set; }
         [Required]

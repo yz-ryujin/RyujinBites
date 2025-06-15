@@ -1,17 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization; // Para o atributo [Authorize]
 using Microsoft.AspNetCore.Identity; // Para UserManager, RoleManager
 using Microsoft.AspNetCore.Mvc; // Para Controller, IActionResult
+using Microsoft.AspNetCore.Mvc.Rendering; // <--- ADICIONADO para SelectList
 using Microsoft.EntityFrameworkCore; // Para métodos de extensão do EF Core (ToListAsync)
 using RyujinBites.Data; // Seu DbContext
 using RyujinBites.Models.Identity; // Sua classe ApplicationUser
-using System; // Para DateTime
-using System.Collections.Generic; // Para List<T>
-using System.Linq; // Para LINQ
-using System.Threading.Tasks; // Para async/await
 using RyujinBites.Models.ViewModels; // Seu namespace para ViewModels
-
-using Microsoft.Extensions.Logging; // <--- ADICIONADO para ILogger
-using Microsoft.AspNetCore.Mvc.Rendering; // <--- ADICIONADO para SelectList
 
 namespace RyujinBites.Controllers
 {
@@ -123,7 +117,7 @@ namespace RyujinBites.Controllers
                         _context.Clientes.Add(cliente);
                         await _context.SaveChangesAsync();
                     }
-                    
+
                     _logger.LogInformation("Novo usuário criado por administrador.");
                     return RedirectToAction(nameof(Index));
                 }
@@ -295,4 +289,4 @@ namespace RyujinBites.Controllers
         // Se você mantiver o GET Delete, ele ainda funcionará como uma página separada, mas o modal o ignora.
         // Se remover, garanta que nenhum link direto a ele exista (o que não deve, pois o Index agora usa o modal).
     }
-}   
+}

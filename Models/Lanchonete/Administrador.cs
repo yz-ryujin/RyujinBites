@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using RyujinBites.Models.Identity;
+﻿using RyujinBites.Models.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace RyujinBites.Models.Lanchonete
 {
-    public class Administrador{
+    public class Administrador
+    {
         [Key]
         public string AdministradorId { get; set; } = null!;
 

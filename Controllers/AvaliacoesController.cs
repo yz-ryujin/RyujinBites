@@ -4,11 +4,8 @@ using Microsoft.AspNetCore.Mvc;          // Para Controller, IActionResult
 using Microsoft.AspNetCore.Mvc.Rendering; // Para SelectList
 using Microsoft.EntityFrameworkCore;      // Para métodos do EF Core (Include, ToListAsync)
 using RyujinBites.Data;                   // Seu DbContext
-using RyujinBites.Models.Lanchonete;      // Suas classes de modelo (Avaliacao, Produto, Cliente)
 using RyujinBites.Models.Identity;        // Sua classe ApplicationUser
-using System.Linq;                        // Para LINQ
-using System.Threading.Tasks;             // Para async/await
-using System;                             // Para DateTime
+using RyujinBites.Models.Lanchonete;      // Suas classes de modelo (Avaliacao, Produto, Cliente)
 
 namespace RyujinBites.Controllers
 {
@@ -86,7 +83,7 @@ namespace RyujinBites.Controllers
         // Importante: Removi "DataAvaliacao" do [Bind], pois ela é preenchida automaticamente.
         public async Task<IActionResult> Create([Bind("AvaliacaoId,ProdutoId,Pontuacao,Comentario")] Avaliacao avaliacao)
         {
-            
+
             var userId = _userManager.GetUserId(User)!;
             avaliacao.ClienteId = userId; // Preenche o ClienteId do usuário logado
             avaliacao.DataAvaliacao = DateTime.UtcNow; // Preenche a data de criação
@@ -102,7 +99,8 @@ namespace RyujinBites.Controllers
             // Se estiver usando o campo IsReported e não houver um campo no formulário:
             ModelState.Remove("IsReported");
 
-            if (ModelState.IsValid){  // Agora, ClienteId, DataAvaliacao, IsReported e Status já têm valores.
+            if (ModelState.IsValid)
+            {  // Agora, ClienteId, DataAvaliacao, IsReported e Status já têm valores.
 
                 _context.Add(avaliacao);
                 await _context.SaveChangesAsync();

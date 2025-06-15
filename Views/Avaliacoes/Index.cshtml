@@ -1,22 +1,23 @@
 ﻿@model IEnumerable<RyujinBites.Models.Lanchonete.Avaliacao>
 
 @{
-    ViewData["Title"] = "Gerenciar Usuários";
+    ViewData["Title"] = "Avaliações de Produtos"; // Título mais adequado para a página
 }
 
 @using Microsoft.AspNetCore.Identity
-@using RyujinBites.Models.Identity
-@inject UserManager<ApplicationUser> UserManager
+@using RyujinBites.Models.Identity // Onde está ApplicationUser
+@inject UserManager<ApplicationUser> UserManager // Injeta o UserManager
 
-<h1>Avaliações</h1> <p>
+<h1>Avaliações</h1>
+<p>
     <a asp-action="Create">Criar Nova Avaliação</a>
 </p>
 
 @if (User.IsInRole("Administrador"))
 {
-        <p>
-            <a asp-action="Denuncias">Ver Avaliações Denunciadas</a>
-        </p>
+    <p>
+        <a asp-action="Denuncias">Ver Avaliações Denunciadas</a>
+    </p>
 }
 
 <table class="table">
@@ -35,88 +36,89 @@
     <tbody>
         @foreach (var item in Model)
         {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Produto.Nome)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Cliente.ApplicationUser.Nome)
-                    </td>
-                    <td>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Produto.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cliente.ApplicationUser.Nome)
+                </td>
+                <td>
                     @if (!string.IsNullOrEmpty(item.Cliente?.ApplicationUser?.Email))
                     {
-                        <span> @Html.DisplayFor(modelItem => item.Cliente.ApplicationUser.Email)</span>
+                        <span>@Html.DisplayFor(modelItem => item.Cliente.ApplicationUser.Email)</span>
                     }
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Pontuacao)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Comentario)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DataAvaliacao)
-                    </td>
-                    <td>
-                        @if (item.IsReported)
-                        {
-                                <span class="badge bg-warning">Sim</span>
-                        }
-                        else
-                        {
-                                <span class="badge bg-success">Não</span>
-                        }
-                    </td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.AvaliacaoId">Detalhes</a> |
-                        @if (item.ClienteId == UserManager.GetUserId(User) || User.IsInRole("Administrador"))
-                        {
-                        <a asp-action="Edit" asp-route-id="@item.AvaliacaoId">Editar</a>
-                        <a asp - action = "Delete" asp-route-id = "@item.AvaliacaoId" > Deletar </a>
-                                            }
-                        @if (item.ClienteId != UserManager.GetUserId(User) && !item.IsReported && User.Identity.IsAuthenticated)
-                        {
-                                <a href="#" class="btn btn-sm btn-warning denunciarBtn" data-id="@item.AvaliacaoId">Denunciar</a>
-                        }
-                    </td>
-                </tr>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Pontuacao)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Comentario)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DataAvaliacao)
+                </td>
+                <td>
+                    @if (item.IsReported)
+                    {
+                        <span class="badge bg-warning">Sim</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">Não</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.AvaliacaoId">Detalhes</a> |
+                    @if (item.ClienteId == UserManager.GetUserId(User) || User.IsInRole("Administrador"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.AvaliacaoId">Editar</a>                            
+                        <a asp-action= "Delete" asp-route-id= "@item.AvaliacaoId" > Deletar </a>
+                    }
+                    @if (item.ClienteId != UserManager.GetUserId(User) && !item.IsReported && User.Identity.IsAuthenticated)
+                    {
+                        <a href="#" class="btn btn-sm btn-warning denunciarBtn" data-id="@item.AvaliacaoId">Denunciar</a>
+                    }
+                </td>
+            </tr>
         }
     </tbody>
 </table>
 
 @section Scripts {
     @{
+        // Mantenha apenas UMA chamada para _ValidationScriptsPartial
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     @Html.AntiForgeryToken()
 
-        <script>
-            $(document).ready(function () {
-                $('.denunciarBtn').on('click', function (e) {
-                    e.preventDefault();
-                    var avaliacaoId = $(this).data('id');
-                    if (confirm('Tem certeza de que deseja denunciar esta avaliação?')) {
-                        $.ajax({
-                            url: '@Url.Action("Denunciar", "Avaliacaos")',
-                            type: 'POST',
-                            data: {
-                                id: avaliacaoId,
-                                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
-                            },
-                            success: function (result) {
-                                if (result.success) {
-                                    alert(result.message);
-                                    location.reload();
-                                } else {
-                                    alert('Erro ao denunciar: ' + result.message);
-                                }
-                            },
-                            error: function (xhr, status, error) {
-                                alert('Ocorreu um erro: ' + error + '\n' + xhr.responseText);
+    <script>
+        $(document).ready(function () {
+            $('.denunciarBtn').on('click', function (e) {
+                e.preventDefault();
+                var avaliacaoId = $(this).data('id');
+                if (confirm('Tem certeza de que deseja denunciar esta avaliação?')) {
+                    $.ajax({
+                        url: '@Url.Action("Denunciar", "Avaliacaos")',
+                        type: 'POST',
+                        data: {
+                            id: avaliacaoId,
+                            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function (result) {
+                            if (result.success) {
+                                alert(result.message);
+                                location.reload();
+                            } else {
+                                alert('Erro ao denunciar: ' + result.message);
                             }
-                        });
-                    }
-                });
+                        },
+                        error: function (xhr, status, error) {
+                            alert('Ocorreu um erro: ' + error + '\n' + xhr.responseText);
+                        }
+                    });
+                }
             });
-        </script>
+        });
+    </script>
 }

@@ -1,0 +1,59 @@
+﻿@model RyujinBites.Models.Lanchonete.Pagamento
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Pagamento</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PagamentoId" />
+            <div class="form-group">
+                <label asp-for="PedidoId" class="control-label"></label>
+                <select asp-for="PedidoId" class="form-control" asp-items="ViewBag.PedidoId"></select>
+                <span asp-validation-for="PedidoId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MetodoPagamento" class="control-label"></label>
+                <input asp-for="MetodoPagamento" class="form-control" />
+                <span asp-validation-for="MetodoPagamento" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ValorPago" class="control-label"></label>
+                <input asp-for="ValorPago" class="form-control" />
+                <span asp-validation-for="ValorPago" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataPagamento" class="control-label"></label>
+                <input asp-for="DataPagamento" class="form-control" />
+                <span asp-validation-for="DataPagamento" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StatusPagamento" class="control-label"></label>
+                <input asp-for="StatusPagamento" class="form-control" />
+                <span asp-validation-for="StatusPagamento" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransacaoIdExterno" class="control-label"></label>
+                <input asp-for="TransacaoIdExterno" class="form-control" />
+                <span asp-validation-for="TransacaoIdExterno" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

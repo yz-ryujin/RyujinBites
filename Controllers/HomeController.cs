@@ -1,6 +1,6 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using RyujinBites.Models;
+using System.Diagnostics;
 
 namespace RyujinBites.Controllers
 {
