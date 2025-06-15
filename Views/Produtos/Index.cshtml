@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<RyujinBites.Models.Lanchonete.Produto>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Produtos";
 }
 
-<h1>Index</h1>
+<h1>Produtos</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a href="#" class="btn btn-success createProdutoBtn">Criar Novo Produto</a>
 </p>
 <table class="table">
     <thead>
@@ -22,44 +22,111 @@
                 @Html.DisplayNameFor(model => model.Preco)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImagemUrl)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Disponivel)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Categoria)
-            </th>
-            <th></th>
+            <th>Categoria</th>
+            <th>Ações</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Descricao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Preco)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImagemUrl)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Disponivel)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Categoria.Nome)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ProdutoId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ProdutoId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ProdutoId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Descricao)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Preco)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Disponivel)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Categoria.Nome)
+                </td>
+                <td>
+                    <a href="#" class="btn btn-sm btn-info detailsProdutoBtn" data-id="@item.ProdutoId">Detalhes</a> |
+                    <a href="#" class="btn btn-sm btn-warning editProdutoBtn" data-id="@item.ProdutoId">Editar</a> |
+                    <a href="#" class="btn btn-sm btn-danger deleteProdutoBtn" data-id="@item.ProdutoId">Deletar</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<div class="modal fade" id="produtoModal" tabindex="-1" aria-labelledby="produtoModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="produtoModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    @Html.AntiForgeryToken() <script>
+                                     $(document).ready(function () {
+                                         // Função genérica para carregar e exibir modais
+                                         function loadModal(actionName, id, title, postActionName) {
+                                             var urlForGet = `@Url.Action("__ACTION__", "Produtos", new { id = "__ID__" })`
+                                                 .replace('__ACTION__', actionName)
+                                                 .replace('__ID__', id || '');
+
+                                             $('#produtoModalLabel').text(title);
+                                             $('#produtoModal .modal-body').load(urlForGet, function () {
+                                                 $('#produtoModal').modal('show');
+
+                                                 // Lida com a submissão de formulários DENTRO do modal via AJAX
+                                                 $('#produtoModal .modal-body form').on('submit', function (e) {
+                                                     e.preventDefault();
+
+                                                     var form = $(this);
+                                                     var formData = form.serialize();
+                                                     var antiForgeryToken = $('input[name="__RequestVerificationToken"]').val();
+
+                                                     // var dataWithToken = formData + '&__RequestVerificationToken=' + encodeURIComponent(antiForgeryToken); Use esta linha que funcionou para Categoria
+
+                                                     var urlForPost = `@Url.Action("__POST_ACTION__", "Produtos", new { id = "__ID__" })` // Lembre-se de mudar para "Produtos" se renomear o controller
+                                                         .replace('__POST_ACTION__', postActionName)
+                                                         .replace('__ID__', id || '');
+
+                                                     $.ajax({
+                                                         url: urlForPost,
+                                                         type: 'POST',
+                                                         data: dataWithToken,
+                                                         success: function (result) {
+                                                             if (result.success) {
+                                                                 alert(result.message);
+                                                                 $('#produtoModal').modal('hide');
+                                                                 location.reload();
+                                                             } else {
+                                                                 alert('Erro: ' + result.message);
+                                                             }
+                                                         },
+                                                         error: function (xhr, status, error) {
+                                                             alert('Ocorreu um erro: ' + error + '\n' + xhr.responseText);
+                                                         }
+                                                     });
+                                                 });
+                                             });
+                                         }
+
+                                         // Eventos de clique para os botões/links
+                                         $('.createProdutoBtn').on('click', function (e) { e.preventDefault(); loadModal('Create', null, 'Criar Novo Produto', 'Create'); });
+                                         $('.detailsProdutoBtn').on('click', function (e) { e.preventDefault(); var id = $(this).data('id'); loadModal('Details', id, 'Detalhes do Produto', 'Details'); });
+                                         $('.editProdutoBtn').on('click', function (e) { e.preventDefault(); var id = $(this).data('id'); loadModal('Edit', id, 'Editar Produto', 'Edit'); });
+                                         $('.deleteProdutoBtn').on('click', function (e) { e.preventDefault(); var id = $(this).data('id'); loadModal('Delete', id, 'Deletar Produto', 'Delete'); });
+                                     });
+    </script>
+}

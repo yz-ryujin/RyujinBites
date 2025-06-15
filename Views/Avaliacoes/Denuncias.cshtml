@@ -82,7 +82,7 @@ else
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    @Html.AntiForgeryToken() <script>
+    <script>
                                      $(document).ready(function () {
                                          // Função para enviar requisição AJAX para as ações de moderação
                                          function sendModerationRequest(url, avaliacaoId, actionName) {
@@ -91,7 +91,7 @@ else
                                                  type: 'POST',
                                                  data: {
                                                      id: avaliacaoId,
-                                                     __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() // Adiciona o token CSRF
+                                                     // __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() Adiciona o token CSRF
                                                  },
                                                  success: function (result) {
                                                      if (result.success) {

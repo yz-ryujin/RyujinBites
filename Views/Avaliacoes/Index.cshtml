@@ -99,7 +99,7 @@
                 var avaliacaoId = $(this).data('id');
                 if (confirm('Tem certeza de que deseja denunciar esta avaliação?')) {
                     $.ajax({
-                        url: '@Url.Action("Denunciar", "Avaliacaos")',
+                        url: '@Url.Action("Denuncias", "Avaliacoes")',
                         type: 'POST',
                         data: {
                             id: avaliacaoId,
