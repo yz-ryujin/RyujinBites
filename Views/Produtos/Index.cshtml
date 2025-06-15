@@ -75,58 +75,58 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    @Html.AntiForgeryToken() <script>
-                                     $(document).ready(function () {
-                                         // Função genérica para carregar e exibir modais
-                                         function loadModal(actionName, id, title, postActionName) {
-                                             var urlForGet = `@Url.Action("__ACTION__", "Produtos", new { id = "__ID__" })`
-                                                 .replace('__ACTION__', actionName)
-                                                 .replace('__ID__', id || '');
 
-                                             $('#produtoModalLabel').text(title);
-                                             $('#produtoModal .modal-body').load(urlForGet, function () {
-                                                 $('#produtoModal').modal('show');
+    <script>
+        $(document).ready(function () {
+            // Função genérica para carregar e exibir modais
+            function loadModal(actionName, id, title, postActionName) {
+                var urlForGet = `@Url.Action("__ACTION__", "Produtos", new { id = "__ID__" })`
+                    .replace('__ACTION__', actionName)
+                    .replace('__ID__', id || '');
 
-                                                 // Lida com a submissão de formulários DENTRO do modal via AJAX
-                                                 $('#produtoModal .modal-body form').on('submit', function (e) {
-                                                     e.preventDefault();
+                $('#produtoModalLabel').text(title);
+                $('#produtoModal .modal-body').load(urlForGet, function () {
+                    $('#produtoModal').modal('show');
 
-                                                     var form = $(this);
-                                                     var formData = form.serialize();
-                                                     var antiForgeryToken = $('input[name="__RequestVerificationToken"]').val();
+                    // Lida com a submissão de formulários DENTRO do modal via AJAX
+                    $('#produtoModal .modal-body form').on('submit', function (e) {
+                        e.preventDefault();
 
-                                                     // var dataWithToken = formData + '&__RequestVerificationToken=' + encodeURIComponent(antiForgeryToken); Use esta linha que funcionou para Categoria
+                        var form = $(this);
+                        var formData = form.serialize(); // <--- DESCOMENTAR
+                        var dataWithToken = formData + '&__RequestVerificationToken=';
+                        
 
-                                                     var urlForPost = `@Url.Action("__POST_ACTION__", "Produtos", new { id = "__ID__" })` // Lembre-se de mudar para "Produtos" se renomear o controller
-                                                         .replace('__POST_ACTION__', postActionName)
-                                                         .replace('__ID__', id || '');
+                        var urlForPost = `@Url.Action("__POST_ACTION__", "Produtos", new { id = "__ID__" })`
+                            .replace('__POST_ACTION__', postActionName)
+                            .replace('__ID__', id || '');
 
-                                                     $.ajax({
-                                                         url: urlForPost,
-                                                         type: 'POST',
-                                                         data: dataWithToken,
-                                                         success: function (result) {
-                                                             if (result.success) {
-                                                                 alert(result.message);
-                                                                 $('#produtoModal').modal('hide');
-                                                                 location.reload();
-                                                             } else {
-                                                                 alert('Erro: ' + result.message);
-                                                             }
-                                                         },
-                                                         error: function (xhr, status, error) {
-                                                             alert('Ocorreu um erro: ' + error + '\n' + xhr.responseText);
-                                                         }
-                                                     });
-                                                 });
-                                             });
-                                         }
+                        $.ajax({
+                            url: urlForPost,
+                            type: 'POST',
+                            data: dataWithToken, // <--- USAR dataWithToken
+                            success: function (result) {
+                                if (result.success) {
+                                    alert(result.message);
+                                    $('#produtoModal').modal('hide');
+                                    location.reload();
+                                } else {
+                                    alert('Erro: ' + result.message);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                alert('Ocorreu um erro: ' + error + '\n' + xhr.responseText);
+                            }
+                        });
+                    });
+                });
+            }
 
-                                         // Eventos de clique para os botões/links
-                                         $('.createProdutoBtn').on('click', function (e) { e.preventDefault(); loadModal('Create', null, 'Criar Novo Produto', 'Create'); });
-                                         $('.detailsProdutoBtn').on('click', function (e) { e.preventDefault(); var id = $(this).data('id'); loadModal('Details', id, 'Detalhes do Produto', 'Details'); });
-                                         $('.editProdutoBtn').on('click', function (e) { e.preventDefault(); var id = $(this).data('id'); loadModal('Edit', id, 'Editar Produto', 'Edit'); });
-                                         $('.deleteProdutoBtn').on('click', function (e) { e.preventDefault(); var id = $(this).data('id'); loadModal('Delete', id, 'Deletar Produto', 'Delete'); });
-                                     });
+            // Eventos de clique para os botões/links
+            $('.createProdutoBtn').on('click', function (e) { e.preventDefault(); loadModal('Create', null, 'Criar Novo Produto', 'Create'); });
+            $('.detailsProdutoBtn').on('click', function (e) { e.preventDefault(); var id = $(this).data('id'); loadModal('Details', id, 'Detalhes do Produto', 'Details'); });
+            $('.editProdutoBtn').on('click', function (e) { e.preventDefault(); var id = $(this).data('id'); loadModal('Edit', id, 'Editar Produto', 'Edit'); });
+            $('.deleteProdutoBtn').on('click', function (e) { e.preventDefault(); var id = $(this).data('id'); loadModal('Delete', id, 'Deletar Produto', 'Delete'); });
+        });
     </script>
 }
