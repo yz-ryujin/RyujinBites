@@ -23,16 +23,16 @@
 
 /* Layout da Sidebar */
 #wrapper {
-    overflow-x: hidden;
-    background-color: var(--second-bg-color);
 }
-
-#sidebar-wrapper {
+#sidebar-wrapper
+{
+    position: fixed;
     min-height: 100vh;
     margin-left: -15rem;
     transition: margin .25s ease-out;
-    background-color: #2c1b1b; /* Tom escuro vinho/madeira */
-    border-right: 2px solid var(--main-bg-color);
+    overflow-x: hidden;
+    background-color: black;
+}
 }
 
     #sidebar-wrapper .sidebar-heading {
@@ -47,6 +47,7 @@
     }
 
 #page-content-wrapper {
+    padding-left: 0;
     min-width: 100vw;
     background-color: white;
 }
@@ -65,6 +66,7 @@
     }
 
     #page-content-wrapper {
+        padding-left: 240px;
         min-width: 0;
         width: 100%;
     }
