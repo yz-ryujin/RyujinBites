@@ -267,11 +267,18 @@ namespace RyujinBites.Data.Migrations
                     b.Property<DateTime>("DataAvaliacao")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsReported")
+                        .HasColumnType("bit");
+
                     b.Property<int>("Pontuacao")
                         .HasColumnType("int");
 
                     b.Property<int>("ProdutoId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("AvaliacaoId");
 
@@ -496,6 +503,9 @@ namespace RyujinBites.Data.Migrations
 
                     b.Property<bool>("Disponivel")
                         .HasColumnType("bit");
+
+                    b.Property<int>("Estoque")
+                        .HasColumnType("int");
 
                     b.Property<string>("ImagemUrl")
                         .HasMaxLength(500)

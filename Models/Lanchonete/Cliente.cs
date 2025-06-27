@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using RyujinBites.Models.Identity;
+﻿using RyujinBites.Models.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace RyujinBites.Models.Lanchonete
 {
-    public class Cliente{
+    public class Cliente
+    {
 
         [Key]
         public string ClienteId { get; set; } = null!;
@@ -19,8 +20,8 @@ namespace RyujinBites.Models.Lanchonete
         [StringLength(50)]
         public string? Estado { get; set; }
 
-        [StringLength(20)] 
-        public string? CEP { get; set; } 
+        [StringLength(20)]
+        public string? CEP { get; set; }
 
         public ApplicationUser? ApplicationUser { get; set; }
 

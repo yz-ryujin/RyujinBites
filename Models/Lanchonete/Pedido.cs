@@ -3,7 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RyujinBites.Models.Lanchonete
 {
-    public class Pedido{
+    public class Pedido
+    {
         [Key]
         public int PedidoId { get; set; }
         public string ClienteId { get; set; } = null!; // ID do cliente que fez o pedido
@@ -25,7 +26,7 @@ namespace RyujinBites.Models.Lanchonete
         public string? Observacoes { get; set; } // Observações adicionais do cliente
         public int? CupomId { get; set; } // Cupom de desconto, se houver
         [ForeignKey("CupomId")]
-        public Cupom? Cupom { get;set; }
+        public Cupom? Cupom { get; set; }
         public ICollection<ItemPedido> ItensPedido { get; set; } = new List<ItemPedido>();
         public Pagamento? Pagamento { get; set; } // Detalhes do pagamento
     }

@@ -3,7 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RyujinBites.Models.Lanchonete
 {
-    public class Cupom{
+    public class Cupom
+    {
         [Key]
         public int CupomId { get; set; }
         [Required]
