@@ -8,97 +8,121 @@
 @using RyujinBites.Models.Identity
 @inject UserManager<ApplicationUser> UserManager
 
-<h1>Avaliações</h1>
+<div class="row">
+    <div class="col-12">
+        <div class="row my-4">
+            <div class="new col-md-6">
+                <nav aria-label="breadcrumb" class="pr-3 py-2">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item">
+                            <a href="/" class="text-decoration-none text-dark">
+                                <i class="material-icons align-middle">home</i> <span class="align-middle">Home</span>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active text-primary" aria-current="page">
+                            Avaliações de Produtos
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <div class="new justify-content-between">
+
+<h4>Avaliações</h4>
+
+<div class="new gap-4">
 
 <p>
-    <a asp-action="Create">Criar Nova Avaliação</a>
+    <a asp-action="Create" class="btn btn-success">Criar Nova Avaliação</a>
 </p>
 
 @if (User.IsInRole("Administrador"))
 {
     <p>
-        <a asp-action="Denuncias">Ver Avaliações Denunciadas</a>
+        <a asp-action="Denuncias" class="btn btn-warning">Ver Avaliações Denunciadas</a>
     </p>
 }
+</div>
+    </div>
 
 <div class="ms-content-wrapper">
-    <div class="row">
-        <div class="col-12">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb pl-0">
-                    <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Home</a></li>
-                    <li class="breadcrumb-item"><a href="#">Clientes</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Avaliações de Clientes</li>
-                </ol>
-            </nav>
-        </div>
-        <div class="col-xl-12 col-md-12">
+            <div class="col-xl-12 col-md-12">
             <div class="ms-panel ms-panel-fh">
                 <div class="ms-panel-body p-0">
-                    <ul class="ms-list ms-feed ms-twitter-feed ms-recent-support-tickets">
-                        @if (!Model.Any()) // Se não houver avaliações
+                    <div class="row">
+                        @if (!Model.Any())
                         {
-                            <li class="ms-list-item text-center py-4">
+                            <div class="col-12 text-center py-4">
                                 <p class="text-muted">Não há avaliações disponíveis no momento.</p>
-                            </li>
+                            </div>
                         }
                         else
                         {
-                            @foreach (var item in Model)
+                            foreach (var item in Model)
                             {
-                                <li class="ms-list-item">
-                                    <div class="media clearfix">
-                                        <img src="https://www.gravatar.com/avatar/@(Guid.NewGuid().ToString("N"))?d=identicon&s=80" class="ms-img-round ms-img-small" alt="Cliente">
-                                        <div class="media-body">
-                                            <div class="customer-meta">
-                                                <div class="new">
-                                                    <h5 class="ms-feed-user mb-0">@Html.DisplayFor(modelItem => item.Cliente.ApplicationUser.Nome)</h5>
-                                                    <h6 class="ml-4 mb-0 text-red">Produto: @Html.DisplayFor(modelItem => item.Produto.Nome)</h6>
+                                <div class="col-md-6 mb-4">
+                                    <div class="card shadow-sm h-100">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <img src="https://www.gravatar.com/avatar/@(Guid.NewGuid().ToString("N"))?d=identicon&s=80"
+                                                     class="rounded-circle me-3" width="30" height="30" alt="Cliente" />
+                                                <div>
+                                                    <h6 class="mb-0">@item.Cliente.ApplicationUser.Nome</h6>
+                                                    <small class="text-muted">Produto: @item.Produto.Nome</small>
                                                 </div>
-                                                <ul class="ms-star-rating rating-fill rating-circle ratings-new">
-                                                    @for (int i = 1; i <= 5; i++)
-                                                    {
-                                                        <li class="ms-rating-item @(item.Pontuacao >= i ? "rated" : "")">
-                                                            <i class="material-icons">star</i>
-                                                        </li>
-                                                    }
-                                                </ul>
                                             </div>
-                                            <span class="my-2 d-block">
-                                                <i class="material-icons">date_range</i> @Html.DisplayFor(modelItem => item.DataAvaliacao)
-                                            </span>
-                                            <p class="d-block">@Html.DisplayFor(modelItem => item.Comentario)</p>
+
+                                            <ul class="ms-star-rating rating-fill rating-circle ratings-new mb-2">
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    <li class="ms-rating-item @(item.Pontuacao >= i ? "rated" : "")">
+                                                        <i class="material-icons">star</i>
+                                                    </li>
+                                                }
+                                            </ul>
+
+                                            <p class="mb-1"><i class="material-icons me-1">date_range</i> @item.DataAvaliacao.ToShortDateString()</p>
+                                            <p class="text-muted">@item.Comentario</p>
 
                                             @if (item.IsReported)
                                             {
-                                                <p class="d-block text-warning"><i class="fas fa-exclamation-triangle me-2"></i> Esta avaliação foi denunciada e está sob revisão.</p>
+                                                <p class="text-warning mb-2">
+                                                    <i class="fas fa-exclamation-triangle me-2"></i> Esta avaliação foi denunciada.
+                                                </p>
                                             }
 
-                                            <div class="d-flex justify-content-between align-items-end">
-                                                <div class="ms-feed-controls">
-                                                    <span>
-                                                        <i class="material-icons">email</i> @Html.DisplayFor(modelItem => item.Cliente.ApplicationUser.Email)
-                                                    </span>
-                                                    <span>
-                                                        <a href="#" class="btn btn-sm btn-info detailsAvaliacaoBtn" data-id="@item.AvaliacaoId">Detalhes</a>
-                                                        @if (item.ClienteId == UserManager.GetUserId(User) || User.IsInRole("Administrador"))
-                                                        {
-                                                            <a href="#" class="btn btn-sm btn-warning editAvaliacaoBtn" data-id="@item.AvaliacaoId">Editar</a>
-                                                            <a href="#" class="btn btn-sm btn-danger deleteAvaliacaoBtn" data-id="@item.AvaliacaoId">Deletar</a>
-                                                        }
-                                                        @if (item.ClienteId != UserManager.GetUserId(User) && !item.IsReported && User.Identity.IsAuthenticated)
-                                                        {
-                                                            <a href="#" class="btn btn-sm btn-warning denunciarBtn" data-id="@item.AvaliacaoId">Denunciar</a>
-                                                        }
-                                                    </span>
+                                            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                                                <small><i class="material-icons">email</i> @item.Cliente.ApplicationUser.Email</small>
+                                                <div class="mt-2 mt-md-0 d-flex gap-2">
+                                                    
+                                                    @if (item.ClienteId == UserManager.GetUserId(User) || User.IsInRole("Administrador"))
+                                                    {
+                                                        <a href="#" class="btn btn-sm btn-warning editAvaliacaoBtn" data-id="@item.AvaliacaoId" title="Editar">
+                                                            <i class="material-icons">edit</i>
+                                                        </a>
+                                                        <a href="#" class="btn btn-sm btn-danger deleteAvaliacaoBtn" data-id="@item.AvaliacaoId" title="Deletar">
+                                                            <i class="material-icons">delete</i>
+                                                        </a>
+                                                    }
+
+                                                    @if (item.ClienteId != UserManager.GetUserId(User) && !item.IsReported && User.Identity.IsAuthenticated)
+                                                    {
+                                                        <a href="#" class="btn btn-sm btn-outline-warning denunciarBtn" data-id="@item.AvaliacaoId" title="Denunciar">
+                                                            <i class="material-icons">report_problem</i>
+                                                        </a>
+                                                    }
                                                 </div>
                                             </div>
+
                                         </div>
                                     </div>
-                                </li>
+                                </div>
                             }
                         }
-                    </ul>
+                    </div>
+
                 </div>
             </div>
         </div>

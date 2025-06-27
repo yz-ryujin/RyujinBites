@@ -4,22 +4,38 @@
     ViewData["Title"] = "Produtos"; // Título da página
 }
 
-<h1>Produtos</h1>
 
-<p>
-    <a href="#" class="btn btn-success createProdutoBtn">Criar Novo Produto</a>
-</p>
 
-<div class="ms-content-wrapper">
-    <div class="row">
-        <div class="col-md-12">
-            <nav aria-label="breadcrumb" class="new">
-                <ol class="breadcrumb pl-0">
-                    <li class="breadcrumb-item"><a href="/"><i class="material-icons">home</i> Home</a></li>
-                    <li class="breadcrumb-item"><a href="#">Cardápio</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Gerenciar Produtos</li>
-                </ol>
-            </nav>
+
+
+<div class="ms-content-wrapper p-0">
+    <div class="row p-0">
+        <div class="col-12">
+            <div class="row my-4">
+                <div class="new col-md-6">
+                    <nav aria-label="breadcrumb" class="pr-3 py-2">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item">
+                                <a href="/" class="text-decoration-none text-dark">
+                                    <i class="material-icons align-middle">home</i> <span class="align-middle">Home</span>
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="#" class="text-decoration-none text-dark">Cardápio</a>
+                            </li>
+                            <li class="breadcrumb-item active text-primary" aria-current="page">
+                                Gerenciar Produtos  
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-md-6 d-flex justify-content-end align-items-start">
+                    <a href="#" class="btn btn-success createProdutoBtn mt-2">Criar Novo Produto</a>
+                </div>
+            </div>
+        </div>
+
+        
             <div class="row">
                 @foreach (var produto in Model)
                 {
@@ -43,7 +59,7 @@
                                     {
                                         <span class="badge badge-primary">Fora de Estoque</span>
                                     }
-                                </div>
+                                </div> 
                                 <p>@produto.Descricao</p>
                                 <div class="new mb-0">
                                     <a href="#" class="btn btn-sm btn-danger deleteProdutoBtn" data-id="@produto.ProdutoId">Deletar</a>

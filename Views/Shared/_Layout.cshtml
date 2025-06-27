@@ -103,25 +103,16 @@
                 <img src="~/images/chef-3d-character.png" alt="Chef Avatar" style="max-width: 250px;" />
             </div>
         </div>
-        <div class="main-content flex-grow-1 p-3">
+        <div class="main-content flex-grow-1 p-3"> 
             <header class="navbar-top p-0 d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-align-left primary-text fs-4 me-3" id="menu-toggle" style="cursor: pointer;"></i>
-                    <div class="dashboard-activity fw-bold fs-5">Dashboard Activity</div>
+                <div class="d-flex justify-content-between align-items-center">
+                   <i class="material-icons align-middle" id="menu-toggle" style="cursor: pointer;">menu</i>
                 </div>
 
                 <div class="input-group search-bar w-50">
                     <input type="text" class="form-control rounded-pill" placeholder="Search" aria-label="Search">
                 </div>
-                <div class="header-right d-flex align-items-center">
-                    <i class="fas fa-bell notification-icon me-3 fs-5"></i>
-                    <img src="~/images/profile/user.png" alt="User Avatar" class="user-avatar rounded-circle" style="width: 40px; height: 40px; object-fit: cover;" />
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <span class="ms-2 fw-bold text-dark">Olá, @UserManager.GetUserName(User)!</span>
-                    }
-                    <partial name="_LoginPartial" />
-                </div>
+                                        <partial name="_LoginPartial" />
                 
             </header>
 
