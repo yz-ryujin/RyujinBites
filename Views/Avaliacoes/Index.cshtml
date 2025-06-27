@@ -1,14 +1,15 @@
 ﻿@model IEnumerable<RyujinBites.Models.Lanchonete.Avaliacao>
 
 @{
-    ViewData["Title"] = "Avaliações de Produtos"; // Título mais adequado para a página
+    ViewData["Title"] = "Avaliações de Produtos"; // Título da página
 }
 
 @using Microsoft.AspNetCore.Identity
-@using RyujinBites.Models.Identity // Onde está ApplicationUser
-@inject UserManager<ApplicationUser> UserManager // Injeta o UserManager
+@using RyujinBites.Models.Identity
+@inject UserManager<ApplicationUser> UserManager
 
 <h1>Avaliações</h1>
+
 <p>
     <a asp-action="Create">Criar Nova Avaliação</a>
 </p>
@@ -20,86 +21,165 @@
     </p>
 }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Produto</th>
-            <th>Cliente</th>
-            <th>Email</th>
-            <th>Pontuação</th>
-            <th>Comentário</th>
-            <th>Data</th>
-            <th>Denunciada</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Produto.Nome)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Cliente.ApplicationUser.Nome)
-                </td>
-                <td>
-                    @if (!string.IsNullOrEmpty(item.Cliente?.ApplicationUser?.Email))
-                    {
-                        <span>@Html.DisplayFor(modelItem => item.Cliente.ApplicationUser.Email)</span>
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Pontuacao)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Comentario)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DataAvaliacao)
-                </td>
-                <td>
-                    @if (item.IsReported)
-                    {
-                        <span class="badge bg-warning">Sim</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-success">Não</span>
-                    }
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.AvaliacaoId">Detalhes</a> |
-                    @if (item.ClienteId == UserManager.GetUserId(User) || User.IsInRole("Administrador"))
-                    {
-                        <a asp-action="Edit" asp-route-id="@item.AvaliacaoId">Editar</a>                            
-                        <a asp-action= "Delete" asp-route-id= "@item.AvaliacaoId" > Deletar </a>
-                    }
-                    @if (item.ClienteId != UserManager.GetUserId(User) && !item.IsReported && User.Identity.IsAuthenticated)
-                    {
-                        <a href="#" class="btn btn-sm btn-warning denunciarBtn" data-id="@item.AvaliacaoId">Denunciar</a>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="ms-content-wrapper">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb pl-0">
+                    <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Clientes</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Avaliações de Clientes</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-xl-12 col-md-12">
+            <div class="ms-panel ms-panel-fh">
+                <div class="ms-panel-body p-0">
+                    <ul class="ms-list ms-feed ms-twitter-feed ms-recent-support-tickets">
+                        @if (!Model.Any()) // Se não houver avaliações
+                        {
+                            <li class="ms-list-item text-center py-4">
+                                <p class="text-muted">Não há avaliações disponíveis no momento.</p>
+                            </li>
+                        }
+                        else
+                        {
+                            @foreach (var item in Model)
+                            {
+                                <li class="ms-list-item">
+                                    <div class="media clearfix">
+                                        <img src="https://www.gravatar.com/avatar/@(Guid.NewGuid().ToString("N"))?d=identicon&s=80" class="ms-img-round ms-img-small" alt="Cliente">
+                                        <div class="media-body">
+                                            <div class="customer-meta">
+                                                <div class="new">
+                                                    <h5 class="ms-feed-user mb-0">@Html.DisplayFor(modelItem => item.Cliente.ApplicationUser.Nome)</h5>
+                                                    <h6 class="ml-4 mb-0 text-red">Produto: @Html.DisplayFor(modelItem => item.Produto.Nome)</h6>
+                                                </div>
+                                                <ul class="ms-star-rating rating-fill rating-circle ratings-new">
+                                                    @for (int i = 1; i <= 5; i++)
+                                                    {
+                                                        <li class="ms-rating-item @(item.Pontuacao >= i ? "rated" : "")">
+                                                            <i class="material-icons">star</i>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                            <span class="my-2 d-block">
+                                                <i class="material-icons">date_range</i> @Html.DisplayFor(modelItem => item.DataAvaliacao)
+                                            </span>
+                                            <p class="d-block">@Html.DisplayFor(modelItem => item.Comentario)</p>
+
+                                            @if (item.IsReported)
+                                            {
+                                                <p class="d-block text-warning"><i class="fas fa-exclamation-triangle me-2"></i> Esta avaliação foi denunciada e está sob revisão.</p>
+                                            }
+
+                                            <div class="d-flex justify-content-between align-items-end">
+                                                <div class="ms-feed-controls">
+                                                    <span>
+                                                        <i class="material-icons">email</i> @Html.DisplayFor(modelItem => item.Cliente.ApplicationUser.Email)
+                                                    </span>
+                                                    <span>
+                                                        <a href="#" class="btn btn-sm btn-info detailsAvaliacaoBtn" data-id="@item.AvaliacaoId">Detalhes</a>
+                                                        @if (item.ClienteId == UserManager.GetUserId(User) || User.IsInRole("Administrador"))
+                                                        {
+                                                            <a href="#" class="btn btn-sm btn-warning editAvaliacaoBtn" data-id="@item.AvaliacaoId">Editar</a>
+                                                            <a href="#" class="btn btn-sm btn-danger deleteAvaliacaoBtn" data-id="@item.AvaliacaoId">Deletar</a>
+                                                        }
+                                                        @if (item.ClienteId != UserManager.GetUserId(User) && !item.IsReported && User.Identity.IsAuthenticated)
+                                                        {
+                                                            <a href="#" class="btn btn-sm btn-warning denunciarBtn" data-id="@item.AvaliacaoId">Denunciar</a>
+                                                        }
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="avaliacaoModal" tabindex="-1" aria-labelledby="avaliacaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="avaliacaoModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     @{
-        // Mantenha apenas UMA chamada para _ValidationScriptsPartial
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     @Html.AntiForgeryToken()
 
     <script>
         $(document).ready(function () {
+            // Função genérica para carregar e exibir modais
+            function loadModal(actionName, id, title, postActionName) {
+                var urlForGet = `@Url.Action("__ACTION__", "Avaliacaos", new { id = "__ID__" })`
+                    .replace('__ACTION__', actionName)
+                    .replace('__ID__', id || '');
+
+                $('#avaliacaoModalLabel').text(title);
+                $('#avaliacaoModal .modal-body').load(urlForGet, function () {
+                    $('#avaliacaoModal').modal('show');
+
+                    $('#avaliacaoModal .modal-body form').on('submit', function (e) {
+                        e.preventDefault();
+
+                        var form = $(this);
+                        var formData = form.serialize();
+                        var dataWithToken = formData + '&__RequestVerificationToken=';
+
+                        var urlForPost = `@Url.Action("__POST_ACTION__", "Avaliacaos", new { id = "__ID__" })`
+                            .replace('__POST_ACTION__', postActionName)
+                            .replace('__ID__', id || '');
+
+                        $.ajax({
+                            url: urlForPost,
+                            type: 'POST',
+                            data: dataWithToken,
+                            success: function (result) {
+                                if (result.success) {
+                                    alert(result.message);
+                                    $('#avaliacaoModal').modal('hide');
+                                    location.reload();
+                                } else {
+                                    alert('Erro: ' + result.message);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                alert('Ocorreu um erro: ' + error + '\n' + xhr.responseText);
+                            }
+                        });
+                    });
+                });
+            }
+
+            // Eventos de clique para os botões/links
+            $('.createAvaliacaoBtn').on('click', function (e) { e.preventDefault(); loadModal('Create', null, 'Criar Nova Avaliação', 'Create'); });
+            $('.detailsAvaliacaoBtn').on('click', function (e) { e.preventDefault(); var id = $(this).data('id'); loadModal('Details', id, 'Detalhes da Avaliação', 'Details'); });
+            $('.editAvaliacaoBtn').on('click', function (e) { e.preventDefault(); var id = $(this).data('id'); loadModal('Edit', id, 'Editar Avaliação', 'Edit'); });
+            $('.deleteAvaliacaoBtn').on('click', function (e) { e.preventDefault(); var id = $(this).data('id'); loadModal('Delete', id, 'Deletar Avaliação', 'Delete'); });
+
+            // Script para o botão Denunciar (já existente)
             $('.denunciarBtn').on('click', function (e) {
                 e.preventDefault();
                 var avaliacaoId = $(this).data('id');
                 if (confirm('Tem certeza de que deseja denunciar esta avaliação?')) {
                     $.ajax({
-                        url: '@Url.Action("Denuncias", "Avaliacoes")',
+                        url: '@Url.Action("Denunciar", "Avaliacaos")',
                         type: 'POST',
                         data: {
                             id: avaliacaoId,
@@ -118,7 +198,7 @@
                         }
                     });
                 }
-            });
+            }); 
         });
     </script>
 }

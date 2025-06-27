@@ -7,51 +7,65 @@
 <h1>Gerenciar Usuários</h1>
 
 <p>
-    <a asp-action="CreateUser">Criar Novo Usuário</a>
+    <a asp-action="CreateUser" class="btn btn-success">Criar Novo Usuário</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Telefone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Roles)
-            </th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nome)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Telefone)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Roles)
-                </td>
-                <td>
-                    <a asp-action="EditUser" asp-route-id="@item.Id">Editar Dados</a> |
-                    <a href="#" class="text-danger deleteUserBtn" data-id="@item.Id" data-name="@item.Nome">Deletar</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
 
+<div class="ms-content-wrapper">
+    <div class="row">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb pl-0">
+                    <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Administração</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Gerenciar Usuários</li>
+                </ol>
+            </nav>
+            <div class="ms-panel">
+                <div class="ms-panel-header">
+                    <h6>Lista de Usuários Cadastrados</h6>
+                </div>
+                <div class="ms-panel-body">
+                    <div class="table-responsive">
+                        <table id="tabela-usuarios" class="table w-100 thead-primary dataTable no-footer" role="grid">
+                            <thead>
+                                <tr role="row">
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Telefone</th>
+                                    <th>Papéis</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr role="row">
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Nome)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Email)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Telefone)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Roles)
+                                        </td>
+                                        <td>
+                                            <a asp-action="EditUser" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar Dados</a> |
+                                            <a href="#" class="btn btn-sm btn-danger deleteUserBtn" data-id="@item.Id" data-name="@item.Nome">Deletar</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -74,10 +88,11 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    @Html.AntiForgeryToken()
 
     <script>
         $(document).ready(function () {
-            // Script para o Modal de DELEÇÃO
+            // Script para o Modal de DELEÇÃO (permanece igual, ajustado para o novo ID da tabela se necessário)
             $('.deleteUserBtn').on('click', function () {
                 var userId = $(this).data('id');
                 var userName = $(this).data('name');
@@ -91,20 +106,20 @@
                         data: { id: userId, __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() },
                         success: function (result) {
                             if (result.success) {
+                                alert(result.message);
                                 location.reload();
                             } else {
                                 alert('Erro ao deletar: ' + result.message);
                             }
                         },
                         error: function (xhr, status, error) {
-                            alert('Ocorreu um erro: ' + error);
+                            alert('Ocorreu um erro: ' + error + '\n' + xhr.responseText);
                         }
                     });
                 });
 
                 $('#deleteUserModal').modal('show');
             });
-
         });
     </script>
 }

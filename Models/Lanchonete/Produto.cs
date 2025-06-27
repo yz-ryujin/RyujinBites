@@ -19,6 +19,10 @@ namespace RyujinBites.Models.Lanchonete
         public string? ImagemUrl { get; set; }
 
         public bool Disponivel { get; set; } = true;
+
+        [Required] // Assumimos que todo produto tem uma quantidade em estoque
+        [Range(0, int.MaxValue, ErrorMessage = "O estoque deve ser um número inteiro positivo.")]
+        public int Estoque { get; set; } = 0; // Quantidade em estoque
         public int CategoriaId { get; set; }
 
         [ForeignKey("CategoriaId")]

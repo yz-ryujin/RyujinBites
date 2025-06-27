@@ -1,115 +1,86 @@
-﻿@model IEnumerable<RyujinBites.Models.Lanchonete.Categoria>
+﻿@model IEnumerable<RyujinBites.Models.ViewModels.HomeProductViewModel>
+@using Microsoft.AspNetCore.Identity
+@using RyujinBites.Models.Identity
+@inject SignInManager<ApplicationUser> SignInManager
 
 @{
-    ViewData["Title"] = "Categorias";
+    ViewData["Title"] = "Bem-vindo ao RyujinBites!";
 }
 
-<h1>Categorias</h1>
-
-<p>
-    <a href="#" class="btn btn-success createCategoriaBtn">Criar Nova Categoria</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Descricao)
-            </th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nome)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Descricao)
-                </td>
-                <td>
-                    <a href="#" class="btn btn-sm btn-info detailsCategoriaBtn" data-id="@item.CategoriaId">Detalhes</a> |
-                    <a href="#" class="btn btn-sm btn-warning editCategoriaBtn" data-id="@item.CategoriaId">Editar</a> |
-                    <a href="#" class="btn btn-sm btn-danger deleteCategoriaBtn" data-id="@item.CategoriaId">Deletar</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<div class="modal fade" id="categoriaModal" tabindex="-1" aria-labelledby="categoriaModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="categoriaModalLabel"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-            </div>
-        </div>
-    </div>
+<div class="text-center mb-5">
+    <h1 class="display-4">Nosso Cardápio</h1>
+    <p class="lead">Delícias Lendárias para o seu Paladar!</p>
 </div>
 
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (var produto in Model)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <img src="@produto.ImagemUrl" class="card-img-top" alt="@produto.Nome">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">@produto.Nome</h5>
+                    <p class="card-text">@produto.Descricao</p>
+                    <div class="mt-auto d-flex justify-content-between align-items-center flex-wrap">
+                        <span class="fs-4 fw-bold text-success">@produto.Preco.ToString("C")</span>
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <div class="input-group w-auto mt-2 mt-md-0">
+                                <input type="number" class="form-control form-control-sm text-center quantity-input" value="1" min="1" data-productid="@produto.Id" style="max-width: 60px;">
+                                <button type="button" class="btn btn-primary btn-sm add-to-order-btn" data-productid="@produto.Id">
+                                    <i class="fas fa-cart-plus"></i> Adicionar
+                                </button>
+                            </div>
+                        }
+                        else
+                        {
+                            <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-secondary btn-sm mt-2 mt-md-0">Login para Pedir</a>
+                        }
+                    </div>
+                </div>
+            </div>
+            </div>
+        }
+    </div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+        <script>
+            $(document).ready(function () {
+                $('.add-to-order-btn').on('click', function (e) {
+                    e.preventDefault();
+
+                    var productId = $(this).data('productid');
+                    var quantityInput = $(this).siblings('.quantity-input');
+                    var quantity = parseInt(quantityInput.val());
+
+                    if (isNaN(quantity) || quantity <= 0) {
+                        alert('Por favor, insira uma quantidade válida (maior que zero).');
+                        return;
+                    }
+
+                    // REMOVER: var antiForgeryToken = $('input[name="__RequestVerificationToken"]').val();
+
+                    $.ajax({
+                        url: '@Url.Action("AdicionarProdutoAoPedido", "Pedidos")',
+                        type: 'POST',
+                        data: {
+                            productId: productId,
+                            quantity: quantity
+                            // REMOVER: __RequestVerificationToken: antiForgeryToken
+                        },
+                        success: function (result) {
+                            if (result.success) {
+                                alert(result.message);
+                            } else {
+                                alert('Erro: ' + result.message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            alert('Ocorreu um erro na requisição: ' + error + '\nDetalhes: ' + xhr.responseText);
+                        }
+                    });
+                });
+            });
+        </script>
     }
-    <script>
-                                     $(document).ready(function () {
-                                         // Função genérica para carregar e exibir modais
-                                         function loadModal(actionName, id, title, postActionName) {
-                                             var urlForGet = `@Url.Action("__ACTION__", "Categorias", new { id = "__ID__" })`
-                                                 .replace('__ACTION__', actionName)
-                                                 .replace('__ID__', id || '');
-
-                                             $('#categoriaModalLabel').text(title);
-                                             $('#categoriaModal .modal-body').load(urlForGet, function () {
-                                                 $('#categoriaModal').modal('show');
-
-                                                 $('#categoriaModal .modal-body form').on('submit', function (e) {
-                                                     e.preventDefault();
-
-                                                     var form = $(this);
-                                                     var formData = form.serialize();
-                                                     
-    
-                                                     var dataWithToken = formData + '&__RequestVerificationToken=';
-
-                                                     var urlForPost = `@Url.Action("__POST_ACTION__", "Categorias", new { id = "__ID__" })`
-                                                         .replace('__POST_ACTION__', postActionName)
-                                                         .replace('__ID__', id || '');
-
-                                                     $.ajax({
-                                                         url: urlForPost,
-                                                         type: 'POST',
-                                                         data: dataWithToken,
-                                                         success: function (result) {
-                                                             if (result.success) {
-                                                                 alert(result.message);
-                                                                 $('#categoriaModal').modal('hide');
-                                                                 location.reload();
-                                                             } else {
-                                                                 alert('Erro: ' + result.message);
-                                                             }
-                                                         },
-                                                         error: function (xhr, error) {
-                                                             alert('Ocorreu um erro: ' + error + '\n' + xhr.responseText);
-                                                         }
-                                                     });
-                                                 });
-                                             });
-                                         }
-
-                                         // Eventos de clique para os botões/links
-                                         $('.createCategoriaBtn').on('click', function (e) { e.preventDefault(); loadModal('Create', null, 'Criar Nova Categoria', 'Create'); });
-                                         $('.detailsCategoriaBtn').on('click', function (e) { e.preventDefault(); var id = $(this).data('id'); loadModal('Details', id, 'Detalhes da Categoria', 'Details'); });
-                                         $('.editCategoriaBtn').on('click', function (e) { e.preventDefault(); var id = $(this).data('id'); loadModal('Edit', id, 'Editar Categoria', 'Edit'); });
-                                         $('.deleteCategoriaBtn').on('click', function (e) { e.preventDefault(); var id = $(this).data('id'); loadModal('Delete', id, 'Deletar Categoria', 'Delete'); });
-                                     });
-    </script>
-}

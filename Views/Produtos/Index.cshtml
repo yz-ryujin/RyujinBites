@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<RyujinBites.Models.Lanchonete.Produto>
 
 @{
-    ViewData["Title"] = "Produtos";
+    ViewData["Title"] = "Produtos"; // Título da página
 }
 
 <h1>Produtos</h1>
@@ -9,54 +9,55 @@
 <p>
     <a href="#" class="btn btn-success createProdutoBtn">Criar Novo Produto</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Descricao)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Preco)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Disponivel)
-            </th>
-            <th>Categoria</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nome)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Descricao)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Preco)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Disponivel)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Categoria.Nome)
-                </td>
-                <td>
-                    <a href="#" class="btn btn-sm btn-info detailsProdutoBtn" data-id="@item.ProdutoId">Detalhes</a> |
-                    <a href="#" class="btn btn-sm btn-warning editProdutoBtn" data-id="@item.ProdutoId">Editar</a> |
-                    <a href="#" class="btn btn-sm btn-danger deleteProdutoBtn" data-id="@item.ProdutoId">Deletar</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
 
+<div class="ms-content-wrapper">
+    <div class="row">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb" class="new">
+                <ol class="breadcrumb pl-0">
+                    <li class="breadcrumb-item"><a href="/"><i class="material-icons">home</i> Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Cardápio</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Gerenciar Produtos</li>
+                </ol>
+            </nav>
+            <div class="row">
+                @foreach (var produto in Model)
+                {
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                        <div class="ms-card">
+                            <div class="ms-card-img">
+                                <img src="@(produto.ImagemUrl ?? "https://via.placeholder.com/300x200?text=Sem+Imagem")" alt="@produto.Nome" style="width:100%; height:auto;">
+                            </div>
+                            <div class="ms-card-body">
+                                <div class="new">
+                                    <h6 class="mb-0">@produto.Nome</h6>
+                                    <h6 class="ms-text-primary mb-0">@produto.Preco.ToString("C")</h6>
+                                </div>
+                                <div class="new meta">
+                                    <p>Estoque: @produto.Estoque </p>
+                                    @if (produto.Estoque > 0) // Verifica se tem estoque para status
+                                    {
+                                        <span class="badge badge-success">Em Estoque</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-primary">Fora de Estoque</span>
+                                    }
+                                </div>
+                                <p>@produto.Descricao</p>
+                                <div class="new mb-0">
+                                    <a href="#" class="btn btn-sm btn-danger deleteProdutoBtn" data-id="@produto.ProdutoId">Deletar</a>
+                                    <a href="#" class="btn btn-sm btn-warning editProdutoBtn" data-id="@produto.ProdutoId">Editar</a>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="produtoModal" tabindex="-1" aria-labelledby="produtoModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -70,15 +71,15 @@
     </div>
 </div>
 
-
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    @Html.AntiForgeryToken()
 
     <script>
+        // Seu JavaScript loadModal e eventos de clique permanecem os mesmos
         $(document).ready(function () {
-            // Função genérica para carregar e exibir modais
             function loadModal(actionName, id, title, postActionName) {
                 var urlForGet = `@Url.Action("__ACTION__", "Produtos", new { id = "__ID__" })`
                     .replace('__ACTION__', actionName)
@@ -88,14 +89,12 @@
                 $('#produtoModal .modal-body').load(urlForGet, function () {
                     $('#produtoModal').modal('show');
 
-                    // Lida com a submissão de formulários DENTRO do modal via AJAX
                     $('#produtoModal .modal-body form').on('submit', function (e) {
                         e.preventDefault();
 
                         var form = $(this);
-                        var formData = form.serialize(); // <--- DESCOMENTAR
+                        var formData = form.serialize();
                         var dataWithToken = formData + '&__RequestVerificationToken=';
-                        
 
                         var urlForPost = `@Url.Action("__POST_ACTION__", "Produtos", new { id = "__ID__" })`
                             .replace('__POST_ACTION__', postActionName)
@@ -104,7 +103,7 @@
                         $.ajax({
                             url: urlForPost,
                             type: 'POST',
-                            data: dataWithToken, // <--- USAR dataWithToken
+                            data: dataWithToken,
                             success: function (result) {
                                 if (result.success) {
                                     alert(result.message);
@@ -122,7 +121,6 @@
                 });
             }
 
-            // Eventos de clique para os botões/links
             $('.createProdutoBtn').on('click', function (e) { e.preventDefault(); loadModal('Create', null, 'Criar Novo Produto', 'Create'); });
             $('.detailsProdutoBtn').on('click', function (e) { e.preventDefault(); var id = $(this).data('id'); loadModal('Details', id, 'Detalhes do Produto', 'Details'); });
             $('.editProdutoBtn').on('click', function (e) { e.preventDefault(); var id = $(this).data('id'); loadModal('Edit', id, 'Editar Produto', 'Edit'); });

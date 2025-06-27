@@ -62,7 +62,7 @@ namespace RyujinBites.Controllers
         // POST: Produtoes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProdutoId,Nome,Descricao,Preco,ImagemUrl,Disponivel,CategoriaId")] Produto produto)
+        public async Task<IActionResult> Create([Bind("ProdutoId,Nome,Descricao,Preco,ImagemUrl,Disponivel,Estoque,Estoque,CategoriaId")] Produto produto)
         {
             if (ModelState.IsValid)
             {
@@ -96,7 +96,7 @@ namespace RyujinBites.Controllers
         // POST: Produtoes/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProdutoId,Nome,Descricao,Preco,ImagemUrl,Disponivel,CategoriaId")] Produto produto)
+        public async Task<IActionResult> Edit(int id, [Bind("ProdutoId,Nome,Descricao,Preco,ImagemUrl,Disponivel,Estoque,CategoriaId")] Produto produto)
         {
             if (id != produto.ProdutoId) return NotFound();
 
